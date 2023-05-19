@@ -10,7 +10,7 @@ see [vizibex.org](visibex.org) for a specification.
 You need cargo for rust and npm for the js side.
 
 ```bash
-cd bex_web
+cd bex-api
 cargo build
 
 cd ../vue-bex
@@ -22,7 +22,7 @@ npm install
 *backend:*
 
 ```bash
-cd bex_web
+cd bex-api
 cargo run
 ```
 
