@@ -1,30 +1,71 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div id="app">
+    <div class="left-panel">
+      <div class="history">
+        <div v-for="item in shellHistory" :key="item.id">
+          {{ item.cmd }}
+          {{ item.stack }}
+          {{ item.out }}
+        </div>
+      </div>
+      <input type="text" v-model="shellInput" @keyup.enter="runShellCommand"/>
+      <button @click="runShellCommand">Run</button>
+    </div>
+    <div class="right-panel">
+      <div v-show="graphVisible">
+        <h3>Graph</h3>
+        <!-- Insert Graph component here -->
+      </div>
+      <div v-show="tableVisible">
+        <h3>Table</h3>
+        <table>
+          <tr v-for="row in tableData" :key="row.id">
+            <td>{{ row.id }}</td>
+            <td>{{ row.cost }}</td>
+            <td>{{ row.op }}</td>
+            <td v-for="arg in row.args" :key="arg">
+              <a @click="navigateToLine(arg)">{{ arg }}</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+//import HelloWorld from './components/HelloWorld.vue'
+
+// These are placeholder values, replace with actual data fetching and handling.
+const shellInput = ref('')
+const shellHistory = reactive([])
+const graphVisible = ref(true)
+const tableVisible = ref(true)
+const tableData = reactive([])
+
+function runShellCommand() {
+  sendCommand(shellInput.value)
+}
+
+function navigateToLine(line) {
+  // TODO: Implement the logic to navigate to a specific line in table and render the associated graph.
+}
+
+async function sendCommand(command: string): Promise<void> {
+    const response = await fetch('/bex/shell', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ command }) });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        const jsonResponse = await response.json();
+        console.log(jsonResponse);
+    }
+}
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 </style>
