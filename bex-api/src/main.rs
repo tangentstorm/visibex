@@ -2,7 +2,7 @@ use std::net::ToSocketAddrs;
 use std::io;
 use std::env;
 use warp::Filter;
-use serde_json::{json};
+use serde_json::json;
 
 // RESTful HTTP API for bex sessions.
 
@@ -20,7 +20,7 @@ async fn main() -> io::Result<()> {
   let shell_route = warp::post()
     .and(warp::path!("shell"))
     .and(warp::body::json())
-    .map(|input: serde_json::Value| {
+    .map(|_input: serde_json::Value| {
         // Handle the shell POST request here
         // ...
 
